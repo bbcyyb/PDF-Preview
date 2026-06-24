@@ -1,0 +1,63 @@
+import type { OcrDocument, OcrField } from '../domain/ocrTypes';
+
+export const samplePage = {
+  page: 1,
+  sourcePageWidth: 595,
+  sourcePageHeight: 842,
+} as const;
+
+export const sampleFields: OcrField[] = [
+  {
+    id: 'document-number',
+    label: '文档编号',
+    value: 'DOC-2026-001',
+    page: 1,
+    bbox: { x: 178, y: 166, width: 132, height: 16 },
+    sourcePageWidth: samplePage.sourcePageWidth,
+    sourcePageHeight: samplePage.sourcePageHeight,
+  },
+  {
+    id: 'applicant-name',
+    label: '申请人',
+    value: 'Li Ming',
+    page: 1,
+    bbox: { x: 178, y: 206, width: 72, height: 16 },
+    sourcePageWidth: samplePage.sourcePageWidth,
+    sourcePageHeight: samplePage.sourcePageHeight,
+  },
+  {
+    id: 'application-date',
+    label: '申请日期',
+    value: '2026-06-25',
+    page: 1,
+    bbox: { x: 178, y: 246, width: 96, height: 16 },
+    sourcePageWidth: samplePage.sourcePageWidth,
+    sourcePageHeight: samplePage.sourcePageHeight,
+  },
+  {
+    id: 'amount',
+    label: '金额',
+    value: 'CNY 12,800.00',
+    page: 1,
+    bbox: { x: 178, y: 286, width: 118, height: 16 },
+    sourcePageWidth: samplePage.sourcePageWidth,
+    sourcePageHeight: samplePage.sourcePageHeight,
+  },
+  {
+    id: 'approval-status',
+    label: '审批状态',
+    value: 'Approved',
+    page: 1,
+    bbox: { x: 178, y: 326, width: 76, height: 16 },
+    sourcePageWidth: samplePage.sourcePageWidth,
+    sourcePageHeight: samplePage.sourcePageHeight,
+  },
+];
+
+export const sampleOcrDocument: OcrDocument = {
+  documentId: 'sample-document',
+  pdfFile: '/fixtures/sample-document.pdf',
+  coordinateSystem: 'top-left-pixels',
+  pages: [samplePage],
+  fields: sampleFields,
+};

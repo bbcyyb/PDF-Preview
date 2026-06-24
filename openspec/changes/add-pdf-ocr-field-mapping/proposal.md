@@ -1,0 +1,30 @@
+## Why
+
+用户需要在一个 Web 前端中同时查看 PDF 原文和 OCR 提取结果，并能确认每个表单字段来自 PDF 的具体位置。当前项目还没有应用代码，需要先定义一个可运行的 React + TypeScript MVP，用于验证 PDF 预览、OCR 字段展示和坐标高亮联动的核心体验。
+
+## What Changes
+
+- 新增 React + TypeScript Web 前端应用，用于加载并展示内置测试 PDF 文件。
+- 新增 OCR 数据模型，支持预先准备的文本内容、字段标签、页码和文本坐标信息。
+- 在页面左侧以 form 形式展示 OCR 字段和值。
+- 在页面右侧展示 PDF preview，并为每页提供可定位的高亮 overlay。
+- 当用户选中左侧 form 字段时，自动滚动或定位到对应 PDF 页，并在 PDF 上圈中该字段来源区域。
+- 保持 MVP 范围，不实现用户上传、在线 OCR、后端存储、权限系统或复杂标注编辑。
+
+## Capabilities
+
+### New Capabilities
+
+- `pdf-ocr-field-mapping`: 提供 PDF 预览、OCR 字段表单展示、字段坐标映射和选中字段高亮定位能力。
+
+### Modified Capabilities
+
+无。
+
+## Impact
+
+- 新增 Vite + React + TypeScript 前端项目结构、构建脚本和基础页面。
+- 可能新增 `pdfjs-dist` 或同等 PDF 渲染依赖，用于浏览器端 PDF preview。
+- 新增 OCR JSON 示例数据和 TypeScript 类型定义，用于描述字段值、页码、坐标和原始页面尺寸。
+- 新增 PDF 渲染组件、OCR form 组件、坐标转换逻辑和高亮 overlay 组件。
+- 初始版本只依赖项目内置测试 PDF 和配套 OCR JSON fixture，不需要用户上传、后端 API、数据库或网络服务。
