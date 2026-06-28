@@ -1,28 +1,37 @@
-# Project Guidelines
+# 项目指南
 
-## Tech Stack
+## 技术栈
 
-- Use stable, mainstream versions of React and TypeScript.
-- Use Vite as the application build tool and development server.
-- Keep the project as a React + TypeScript web application unless a future OpenSpec change explicitly expands the scope.
+- 使用稳定、主流版本的 React 和 TypeScript。
+- 使用 Vite 作为应用构建工具和开发服务器。
+- 除非后续 OpenSpec 变更明确扩大项目范围，否则本项目应保持为 React + TypeScript Web 应用。
 
-## Dependencies
+## 依赖管理
 
-- Prefer popular, well-maintained third-party libraries for common UI and infrastructure needs.
-- Do not rebuild mature functionality that is already provided by stable ecosystem libraries.
-- Avoid niche, unmaintained, or low-adoption components unless there is a clear technical reason documented in the change design.
-- Keep dependencies purposeful; do not add a large framework or library for a small isolated feature.
+- 对于通用 UI 和基础设施需求，优先使用流行且维护良好的第三方库。
+- 不要重复实现稳定生态库已经提供的成熟功能。
+- 避免使用小众、缺乏维护或采用率较低的组件；如果确有技术必要，必须在变更设计中说明原因。
+- 依赖必须有明确用途；不要为了小范围独立功能引入大型框架或大型库。
 
-## React Structure
+## React 结构
 
-- Build the UI with focused, reusable React components.
-- Do not place large amounts of unrelated UI, state management, PDF rendering, OCR form rendering, and coordinate logic in a single `.tsx` file.
-- Separate pure logic from React components where practical, especially coordinate conversion, OCR validation, and fixture handling.
-- Keep component props typed explicitly and keep shared domain types in dedicated TypeScript modules.
+- 使用职责明确、可复用的 React 组件构建界面。
+- 不要把大量无直接关联的 UI、状态管理、PDF 渲染、OCR 表单渲染和坐标逻辑放在同一个 `.tsx` 文件中。
+- 在可行时，将纯逻辑与 React 组件分离，尤其是坐标转换、OCR 校验和 fixture 处理逻辑。
+- 组件 props 必须显式声明类型；共享领域类型应放在专门的 TypeScript 模块中。
 
-## Testing
+## PDF/OCR 映射规则
 
-- Unit tests are required for non-trivial logic.
-- Coordinate conversion, OCR field validation, and fixture parsing must have focused tests.
-- Component behavior that drives core UX, such as selecting a form field and showing a PDF highlight, should be covered by component or integration tests.
-- Run type checking, automated tests, and a production build before marking implementation work complete.
+- 将归一化 OCR 字段模型作为 PDF 高亮的核心契约：每个可映射字段都需要 `id`、`label`、`value`、从 1 开始计数的 `page`、`bbox`、`sourcePageWidth` 和 `sourcePageHeight`。
+- OCR 数据在应用内部只使用一种坐标系统：左上角为原点、像素为单位，且 `bbox` 格式为 `{ x, y, width, height }`。外部 OCR 输出必须先通过适配器转换，再进入 UI 组件。
+- PDF 渲染和高亮渲染必须分离：PDF 页面渲染到 canvas，字段高亮绘制在与页面对齐的 overlay 层上。
+- 坐标缩放逻辑必须放在经过测试的纯工具函数中，并基于 PDF 页面的实际渲染尺寸计算，不得依赖原始尺寸假设。
+- 表单选中状态、PDF 高亮状态和页面滚动定位必须由同一个选中字段状态驱动。
+- fixture PDF 和 OCR JSON 必须保持确定性，并由同一份源数据生成，以便稳定验证映射回归。
+
+## 测试
+
+- 非平凡逻辑必须编写单元测试。
+- 坐标转换、OCR 字段校验和 fixture 解析必须有聚焦的测试。
+- 驱动核心用户体验的组件行为，例如选择表单字段并显示 PDF 高亮，应通过组件测试或集成测试覆盖。
+- 标记实现工作完成前，必须运行类型检查、自动化测试和生产构建。
