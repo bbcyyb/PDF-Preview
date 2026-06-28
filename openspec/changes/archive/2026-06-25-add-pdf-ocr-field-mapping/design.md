@@ -1,12 +1,12 @@
-## Context
+## 背景
 
-项目当前只有 OpenSpec 配置，还没有应用代码。目标是构建一个浏览器端 React + TypeScript MVP：左侧展示 OCR 字段 form，右侧展示 PDF preview，用户选中字段后在 PDF 上标出该字段来源区域。
+项目当前只有 OpenSpec 配置，还没有应用代码。目标是构建一个浏览器端 React + TypeScript MVP：左侧展示 OCR 字段表单，右侧展示 PDF 预览，用户选中字段后在 PDF 上标出该字段来源区域。
 
 输入数据分为两类：项目内置测试 PDF，以及配套的预生成 OCR JSON。OCR JSON 可以由项目脚本根据 PDF fixture 的字段定义“模拟 OCR 结果”生成，不要求接入真实 OCR 工具。OCR JSON 需要包含文本值、字段标签、页码、文本坐标和坐标来源页面尺寸，否则前端无法在不同缩放比例下稳定还原位置。
 
-## Goals / Non-Goals
+## 目标与非目标
 
-**Goals:**
+**目标：**
 
 - 创建可运行的 Vite + React + TypeScript Web 应用。
 - 在右侧渲染 PDF 页面，并支持多页纵向预览。
@@ -16,7 +16,7 @@
 - 使用简单的内置 PDF/OCR fixture 完成核心联动验证。
 - 保持数据模型清晰，方便后续替换为后端接口、上传流程、真实 OCR 输出或编辑工作流。
 
-**Non-Goals:**
+**非目标：**
 
 - 不在前端执行 OCR。
 - 不实现用户上传 PDF 或 OCR JSON。
@@ -25,10 +25,10 @@
 - 不实现复杂批注工具，例如拖拽修改 bbox、合并拆分字段或训练模板。
 - 不支持所有可能的 OCR 坐标系统；MVP 只支持带原始页面尺寸的像素坐标，并为后续扩展保留字段。
 
-## Decisions
+## 决策
 
 1. 使用 Vite + React + TypeScript 构建 Web MVP。
-   - 理由：Vite 启动和构建简单，React 适合管理选中字段、PDF 页渲染状态和 form/preview 联动状态，TypeScript 能约束 OCR 数据结构。
+   - 理由：Vite 启动和构建简单，React 适合管理选中字段、PDF 页渲染状态和表单/预览联动状态，TypeScript 能约束 OCR 数据结构。
    - 替代方案：Next.js。当前不需要 SSR、路由或服务端能力，引入 Next.js 会增加不必要复杂度。
 
 2. 使用 `pdfjs-dist` 作为 PDF 渲染基础。
@@ -38,7 +38,7 @@
 3. OCR 字段使用显式坐标模型。
    - 数据至少包含 `id`、`label`、`value`、`page`、`bbox`、`sourcePageWidth` 和 `sourcePageHeight`。
    - 理由：坐标转换必须知道 OCR 产生时的页面尺寸，不能只保存 bbox，否则 PDF 渲染缩放后无法稳定定位。
-   - 替代方案：保存 normalized 坐标。归一化坐标更通用，但很多 OCR 工具默认输出像素坐标；MVP 先支持像素坐标，后续可增加 normalization adapter。
+   - 替代方案：保存归一化坐标。归一化坐标更通用，但很多 OCR 工具默认输出像素坐标；MVP 先支持像素坐标，后续可增加归一化适配器。
 
 4. PDF 页面采用 canvas 渲染，highlight 采用同尺寸 overlay 层。
    - 理由：canvas 负责 PDF 内容，overlay 用 HTML/SVG 负责交互高亮，两者分离，避免重绘 PDF 才能更新高亮。
@@ -50,7 +50,7 @@
    - 替代方案：在组件内直接计算。短期代码少，但难以验证边界条件。
 
 6. 选中字段状态集中管理。
-   - 使用 `selectedFieldId` 驱动 form 高亮、PDF overlay 高亮和滚动定位。
+   - 使用 `selectedFieldId` 驱动表单高亮、PDF overlay 高亮和滚动定位。
    - 理由：单一状态源能避免左侧和右侧显示不一致。
    - 替代方案：各组件维护局部选中状态。实现简单场景可行，但联动行为容易不同步。
 
@@ -61,10 +61,10 @@
    - 标准 OCR JSON 使用前端统一坐标系统：左上角原点、像素单位、`bbox: { x, y, width, height }`、1-based `page`，并包含 `sourcePageWidth` 和 `sourcePageHeight`。
    - 如果 PDF 生成工具使用左下角坐标系，生成 OCR JSON 时必须转换为左上角坐标，例如 `ocrY = pageHeight - pdfY - textHeight`。
    - 实际 OCR 工具输出不属于 MVP 必需范围；后续如果要接入 PaddleOCR、Tesseract 或云 OCR，再增加 adapter/兼容性样本测试 `raw OCR output -> normalized OcrDocument`。
-   - 理由：当前目标是验证 preview/form/highlight 联动，不是验证 OCR 质量；确定性 fixture 能隔离前端坐标映射问题。
+   - 理由：当前目标是验证预览/表单/高亮联动，不是验证 OCR 质量；确定性 fixture 能隔离前端坐标映射问题。
    - 替代方案：只使用真实 OCR 工具输出。更贴近生产输入，但测试结果不稳定，且难以判断坐标错误来自 OCR 还是前端映射逻辑。
 
-## Risks / Trade-offs
+## 风险与取舍
 
 - OCR 坐标原点不一致，例如某些工具使用左下角原点 → 在数据模型中明确 MVP 使用左上角原点；后续通过 adapter 支持其他坐标系统。
 - PDF 渲染尺寸变化导致高亮错位 → 页面渲染完成后记录实际 canvas 尺寸，并基于实际尺寸计算 overlay。
