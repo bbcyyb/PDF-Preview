@@ -43,6 +43,64 @@ button {
   padding: 24px;
 }
 
+.preview-launcher {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  max-width: 560px;
+}
+
+.preview-launcher h2 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.preview-launcher p {
+  margin: 0;
+  color: #4f5a67;
+  line-height: 1.6;
+}
+
+.preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.primary-action,
+.secondary-action {
+  min-height: 42px;
+  border-radius: 8px;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.primary-action {
+  border: 1px solid #154fb4;
+  background: #154fb4;
+  color: #ffffff;
+  font-weight: 650;
+}
+
+.primary-action:hover,
+.primary-action:focus-visible {
+  background: #0f3f92;
+  outline: 0;
+}
+
+.secondary-action {
+  border: 1px solid #c7d0da;
+  background: #ffffff;
+  color: #1b1f24;
+}
+
+.secondary-action:hover,
+.secondary-action:focus-visible {
+  border-color: #154fb4;
+  outline: 0;
+}
+
 .panel-header h1 {
   margin: 0;
   font-size: 24px;
@@ -149,6 +207,86 @@ button {
   box-shadow: 0 0 0 2px rgb(255 255 255 / 80%);
 }
 
+.pdf-floating-dialog {
+  position: fixed;
+  z-index: 1000;
+  width: min(720px, calc(100vw - 32px));
+  height: min(78vh, 760px);
+  min-width: min(420px, calc(100vw - 32px));
+  min-height: 360px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  resize: both;
+  border: 1px solid #aeb9c6;
+  border-radius: 8px;
+  background: #e3e7eb;
+  box-shadow:
+    0 18px 55px rgb(12 18 28 / 28%),
+    0 2px 8px rgb(12 18 28 / 16%);
+}
+
+.pdf-floating-titlebar {
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #c7d0da;
+  background: linear-gradient(#ffffff, #f4f7fa);
+  padding: 10px 12px 10px 16px;
+  cursor: move;
+}
+
+.pdf-floating-title {
+  min-width: 0;
+}
+
+.pdf-floating-title h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.pdf-floating-title p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 4px 0 0;
+  color: #5d6673;
+  font-size: 14px;
+}
+
+.icon-button {
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #364150;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.icon-button:hover,
+.icon-button:focus-visible {
+  border-color: #c7d0da;
+  background: #ffffff;
+  outline: 0;
+}
+
+.pdf-floating-content {
+  min-height: 0;
+  overflow: auto;
+  padding: 18px;
+}
+
 @media (max-width: 800px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -162,5 +300,20 @@ button {
   .preview-panel {
     min-height: 65vh;
     padding: 16px;
+  }
+
+  .pdf-floating-dialog {
+    width: calc(100vw - 20px);
+    height: 72vh;
+    min-width: 300px;
+  }
+
+  .pdf-floating-titlebar {
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .pdf-floating-content {
+    padding: 14px;
   }
 }

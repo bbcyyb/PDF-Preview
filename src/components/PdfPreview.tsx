@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getDocument, type PDFDocumentProxy, type PDFPageProxy } from 'pdfjs-dist';
 import type { OcrField, RenderedPageDimensions } from '../domain/ocrTypes';
 import { validateMappableField } from '../domain/ocrValidation';
@@ -154,9 +154,16 @@ export function PdfPreview({ pdfUrl, fields, selectedFieldId, pageCountHint }: P
     pageRefs.current[selectedField.page]?.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }, [pageCountHint, pdfDocument?.numPages, selectedField]);
 
-  const handleRendered = (pageNumber: number, dimensions: RenderedPageDimensions) => {
-    setPageDimensions((current) => ({ ...current, [pageNumber]: dimensions }));
-  };
+  const handleRendered = useCallback((pageNumber: number, dimensions: RenderedPageDimensions) => {
+    setPageDimensions((current) => {
+      const previous = current[pageNumber];
+      if (previous?.width === dimensions.width && previous.height === dimensions.height) {
+        return current;
+      }
+
+      return { ...current, [pageNumber]: dimensions };
+    });
+  }, []);
 
   if (error) {
     return <p className="status-message error">PDF 加载失败：{error}</p>;

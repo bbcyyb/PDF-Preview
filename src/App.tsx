@@ -4,11 +4,13 @@ import type { OcrDocument } from './domain/ocrTypes';
 import { validateMappableField } from './domain/ocrValidation';
 import { OcrFieldForm } from './components/OcrFieldForm';
 import { PdfPreview } from './components/PdfPreview';
+import { FloatingPdfDialog } from './components/FloatingPdfDialog';
 
 export default function App() {
   const [ocrDocument, setOcrDocument] = useState<OcrDocument | null>(null);
   const [ocrError, setOcrError] = useState<string | null>(null);
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -39,6 +41,14 @@ export default function App() {
   const mappingResult = selectedField
     ? validateMappableField(selectedField, ocrDocument?.pages.length)
     : null;
+  const pdfPreview = (
+    <PdfPreview
+      pdfUrl={ocrDocument?.pdfFile ?? '/fixtures/sample-document.pdf'}
+      fields={ocrDocument?.fields ?? []}
+      selectedFieldId={selectedFieldId}
+      pageCountHint={ocrDocument?.pages.length}
+    />
+  );
 
   return (
     <main className="app-shell">
@@ -59,13 +69,26 @@ export default function App() {
       </section>
 
       <section className="preview-panel" aria-label="PDF 预览">
-        <PdfPreview
-          pdfUrl={ocrDocument?.pdfFile ?? '/fixtures/sample-document.pdf'}
-          fields={ocrDocument?.fields ?? []}
-          selectedFieldId={selectedFieldId}
-          pageCountHint={ocrDocument?.pages.length}
-        />
+        <div className="preview-launcher">
+          <h2>PDF 预览</h2>
+          <p>当前字段：{selectedField?.label ?? '未选择'}</p>
+          <div className="preview-actions">
+            <button className="primary-action" type="button" onClick={() => setPdfDialogOpen(true)}>
+              打开 PDF 预览
+            </button>
+          </div>
+        </div>
       </section>
+
+      {pdfDialogOpen ? (
+        <FloatingPdfDialog
+          onClose={() => setPdfDialogOpen(false)}
+          selectedLabel={`当前字段：${selectedField?.label ?? '未选择'}`}
+          title="PDF 预览"
+        >
+          {pdfPreview}
+        </FloatingPdfDialog>
+      ) : null}
     </main>
   );
 }
