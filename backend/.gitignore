@@ -1,0 +1,31 @@
+# Backend: Java 17 + Spring Boot + Maven
+
+# Maven 构建产物
+target/
+
+# Java 编译产物
+*.class
+
+# 打包产物
+*.jar
+*.war
+*.ear
+
+# Maven release/backup 文件
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+
+# Maven wrapper 下载目录（如果后续引入 wrapper）
+.mvn/wrapper/maven-wrapper.jar
+
+# Spring Boot 本地运行文件
+application-local.properties
+application-local.yml
+
+# JVM 崩溃日志
+hs_err_pid*
+replay_pid*

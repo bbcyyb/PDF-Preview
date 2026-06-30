@@ -1,0 +1,4 @@
+interface:
+  display_name: "OPSX"
+  short_description: "OpenSpec workflow driver skill"
+  default_prompt: "Use $opsx to drive OpenSpec workflows in this repository."
